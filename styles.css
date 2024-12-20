@@ -1,0 +1,133 @@
+/* General body styling */
+/* General body styling with double gradient */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #6e7aef, #5e5dcb), linear-gradient(to right, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1)); /* Dva gradijenta */
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+  }
+  
+  
+  /* Container styling */
+  .container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 320px;
+    backdrop-filter: blur(10px); /* Glassmorphism effect */
+  }
+  
+  /* Heading styling */
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Button styling */
+  .btn {
+    width: 75%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding: 12px 24px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.3s ease-in-out;
+  }
+  button:disabled {
+    background-color: #d3d3d3;  /* Blijeda boja za onemogućeno dugme */
+    color: #aaa;               /* Svjetlija boja teksta */
+    cursor: not-allowed;       /* Pokazuje da dugme nije aktivno */
+}
+
+  
+  .btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+  }
+  
+  .btn:active {
+    background-color: #003d7a;
+    transform: translateY(2px);
+  }
+  
+  /* Slider container */
+  .slider-container {
+    margin-top: 25px;
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+  }
+  
+  /* Slider label */
+  .slider-label {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  /* Slider styling */
+  .slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 12px;
+    background: #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: background 0.3s ease;
+  }
+  
+  /* Slider thumb styling */
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #007BFF;
+    border: 2px solid #0056b3;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #007BFF;
+    border: 2px solid #0056b3;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+  }
+  
+  /* Hover effect for slider thumb */
+  .slider::-webkit-slider-thumb:hover,
+  .slider::-moz-range-thumb:hover {
+    background: #0056b3;
+    transform: scale(1.2);
+  }
+  
+  /* Active state for slider */
+  .slider:active {
+    background: #cce5ff;
+  }
+  

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Garage Control</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Pametna garaža</h1>
+    <button class="btn" id="lightOnBtn">Upali svjetlo</button>
+    <button class="btn" id="lightOffBtn">Ugasi svjetlo</button>
+    <button class="btn" id="openDoorBtn">Otvori vrata</button>
+    <button class="btn" id="closeDoorBtn">Zatvori vrata</button>
+    <button class="btn" id="autoCloseBtn">Automatski režim</button>
+  </div>
+  <script src="script.js"></script>
+
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyBdCtdx90chwqKEqDWmNhrCdMnlFzLIg8g",
+      authDomain: "pametna-garaza.firebaseapp.com",
+      databaseURL: "https://pametna-garaza-default-rtdb.firebaseio.com",
+      projectId: "pametna-garaza",
+      storageBucket: "pametna-garaza.firebasestorage.app",
+      messagingSenderId: "178565765281",
+      appId: "1:178565765281:web:6f6a7c512acb71d0bcb8e0",
+      measurementId: "G-S25CBSYK5J"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    import {get, getDatabase, ref, set, child, update, remove}
+    from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+
+    const db=getDatabase();
+
+
+    let openDoorBtn = document.getElementById("openDoorBtn");
+    let upaljenoSvjetlo=document.getElementById("lightOnBtn");
+    let closeDoorBtn=document.getElementById("closeDoorBtn");
+    let ugasenoSvjetlo=document.getElementById('lightOffBtn');
+
+function toggleVrataState(status) {
+    if (status) {
+        openDoorBtn.disabled = true;  
+        closeDoorBtn.disabled=false;
+    } else {
+        openDoorBtn.disabled = false; 
+        closeDoorBtn.disabled=true;
+    }
+}
+function toggleSvjetloState(status) {
+    if (status) {
+        ugasenoSvjetlo.disabled = false;  
+        upaljenoSvjetlo.disabled=true;
+    } else {
+        upaljenoSvjetlo.disabled = false; 
+        ugasenoSvjetlo.disabled=true;
+    }
+}
+
+
+function checkServoStatus() {
+    const servoRef = ref(db, 'stanje/vrataOtvorena');  
+    get(servoRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            const servoMoved = snapshot.val();
+            console.log("Vrata Otvorena Status: ", servoMoved);  
+            toggleVrataState(servoMoved);  
+        } else {
+            console.log("Status vrata nije pronađen.");
+        }
+    });
+}
+
+function checkSvjetloStatus() {
+    const svjetloRef = ref(db, 'stanje/upaljenoSvjetlo'); 
+    get(svjetloRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            const upaljenoSvjetlo = snapshot.val();
+            console.log("Upaljeno svjetlo status: ", upaljenoSvjetlo);  
+            toggleSvjetloState(upaljenoSvjetlo);  
+        } else {
+            console.log("Status svjetla nije pronađen.");
+        }
+    });
+}
+
+document.getElementById("closeDoorBtn").addEventListener("click", function() {
+    const doorStateRef = ref(db, 'stanje/vrataOtvorena');
+    set(doorStateRef, false);  
+    console.log("Poslata komanda za zatvaranje vrata");
+});
+document.getElementById("openDoorBtn").addEventListener("click", function() {
+    const doorStateRef = ref(db, 'stanje/vrataOtvorena');
+    set(doorStateRef, true); 
+    console.log("Poslata komanda za zatvaranje vrata");
+});
+document.getElementById("closeDoorBtn").addEventListener("click", function() {
+    const doorStateRef = ref(db, 'stanje/vrataOtvorena');
+    set(doorStateRef, false);  
+    console.log("Poslata komanda za zatvaranje vrata");
+});
+document.getElementById("lightOnBtn").addEventListener("click",function(){
+    const svjetloRef=ref(db,'stanje/upaljenoSvjetlo');
+    set(svjetloRef,true);
+    console.log("Poslata komanda za paljenje svjetla");
+});
+document.getElementById("lightOffBtn").addEventListener("click",function(){
+    const svjetloRef=ref(db,'stanje/upaljenoSvjetlo');
+    set(svjetloRef,false);
+    console.log("Poslata komanda za paljenje svjetla");
+});
+document.getElementById("autoCloseBtn").addEventListener("click", function () {
+    const automatskiRef = ref(db, 'stanje/automatskoZatvaranje');
+    const autoCloseBtn = document.getElementById("autoCloseBtn");
+
+    get(automatskiRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            const currentValue = snapshot.val(); 
+
+            
+            const newValue = !currentValue;
+
+            
+            set(automatskiRef, newValue)
+                .then(() => {
+                    console.log(`Automatsko zatvaranje je sada ${newValue ? "uključeno" : "isključeno"}`);
+                    
+                   
+                    if (newValue) {
+                        autoCloseBtn.style.backgroundColor = "green"; 
+                    } else {
+                        autoCloseBtn.style.backgroundColor = ""; 
+                    }
+                })
+                .catch((error) => {
+                    console.error("Greška pri ažuriranju: ", error);
+                });
+        } else {
+            console.log("Varijabla automatskoZatvaranje ne postoji u bazi.");
+        }
+    }).catch((error) => {
+        console.error("Greška pri dohvaćanju vrijednosti: ", error);
+    });
+});
+
+setInterval(checkServoStatus, 1000);
+setInterval(checkSvjetloStatus,1000);
+  </script>
+</body>
+</html>
